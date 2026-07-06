@@ -8,6 +8,9 @@ let package = Package(
         .library(name: "DrachmaCore", targets: ["DrachmaCore"]),
         .executable(name: "drachma-mcp", targets: ["DrachmaMCP"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/modelcontextprotocol/swift-sdk.git", from: "0.12.1"),
+    ],
     targets: [
         .target(
             name: "DrachmaCore",
@@ -20,7 +23,10 @@ let package = Package(
         ),
         .executableTarget(
             name: "DrachmaMCP",
-            dependencies: ["DrachmaCore"],
+            dependencies: [
+                "DrachmaCore",
+                .product(name: "MCP", package: "swift-sdk"),
+            ],
             path: "mcp/Sources"
         ),
     ]
