@@ -56,7 +56,7 @@ public struct ConverterView: View {
             Section {
                 result
 
-                if case .loaded = model.state, let onShowHistory {
+                if case .loaded = model.state, model.isHistoryAvailable, let onShowHistory {
                     Button {
                         onShowHistory()
                     } label: {
@@ -105,6 +105,11 @@ public struct ConverterView: View {
         }
         .task { await model.load() }
         .onChange(of: model.fromCurrency) {
+            Task { await model.load() }
+        }
+        .onChange(of: model.toCurrency) {
+            // The pair decides the source (ECB vs community), so quote
+            // changes reload too.
             Task { await model.load() }
         }
     }
@@ -179,9 +184,10 @@ public struct ConverterView: View {
 
     @ViewBuilder
     private var honestFooter: some View {
-        if let date = model.rateDate {
-            // The manifesto on screen: every number says which day it belongs to.
-            Text("ECB reference rate · \(date) · not a tradable quote")
+        if let date = model.rateDate, let source = model.sourceLabel {
+            // The manifesto on screen: every number says which day it belongs
+            // to — and which system it came from.
+            Text("\(source) · \(date) · not a tradable quote")
         }
     }
 }

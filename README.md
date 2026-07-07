@@ -124,7 +124,12 @@ Built in the open with [Claude Code](https://claude.com/claude-code) as an AI pa
 
 ## Data
 
-Rates are the ECB's daily reference rates served by [Frankfurter](https://frankfurter.dev) (open source, no key required). Rates update on ECB working days around 16:00 CET — so weekend numbers are Friday's, and Drachma says so on screen rather than pretending otherwise. They are reference rates, not tradable quotes.
+Two sources, always labeled — never blended, never hidden:
+
+- **ECB reference rates** via [Frankfurter](https://frankfurter.dev) (keyless) — the official ~30 currencies, published once per working day around 16:00 CET. Weekend numbers are Friday's, and Drachma says so on screen rather than pretending otherwise.
+- **Community rates** via [currency-api](https://github.com/fawazahmed0/exchange-api) (keyless, 300+ currencies, daily) — coverage where the ECB doesn't reach (VND, COP, PEN, …). Marked *indicative* wherever they appear.
+
+Pairs the ECB covers get ECB numbers; everything else gets the community source — and the footer under every result names which one you're looking at. Neither is a tradable quote.
 
 ## License
 

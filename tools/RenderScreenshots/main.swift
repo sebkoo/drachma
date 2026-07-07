@@ -11,8 +11,8 @@ import DrachmaApp
 /// Deterministic fixture using the actual ECB reference rates of 2026-07-06,
 /// captured during the MCP smoke test — so the screenshots are reproducible
 /// and show real numbers.
-struct FixtureRates: RatesClient {
-    func latestRates(base: String) async throws -> RatesSnapshot {
+struct FixtureRates: PairRatesProviding {
+    func latestRates(base: String, quote: String) async throws -> RatesSnapshot {
         RatesSnapshot(base: "USD", date: "2026-07-06", rates: [
             "EUR": Decimal(string: "0.87604")!,
             "KRW": Decimal(string: "1538.46")!,
@@ -20,11 +20,7 @@ struct FixtureRates: RatesClient {
             "CNY": Decimal(string: "6.7957")!,
             "CAD": Decimal(string: "1.4223")!,
             "AUD": Decimal(string: "1.4421")!,
-        ])
-    }
-
-    func rates(on day: String, base: String) async throws -> RatesSnapshot {
-        try await latestRates(base: base)
+        ], source: .ecb)
     }
 }
 
@@ -32,7 +28,7 @@ let outputDirectory = URL(fileURLWithPath: CommandLine.arguments.count > 1
     ? CommandLine.arguments[1]
     : "docs/screenshots")
 
-let model = ConverterViewModel(ratesClient: FixtureRates())
+let model = ConverterViewModel(ratesClient: FixtureRates(), currencyCatalog: { [] })
 await model.load()
 model.amountText = "100"
 

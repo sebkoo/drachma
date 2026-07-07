@@ -10,7 +10,7 @@ public struct DrachmaRootView: View {
     @State private var favorites = FavoritesStore()
 
     public init(
-        ratesClient: any RatesClient = CachedRatesClient(wrapping: FrankfurterClient())
+        ratesClient: any PairRatesProviding = CachedPairRatesClient(wrapping: CompositeRatesClient())
     ) {
         _converter = State(initialValue: ConverterViewModel(ratesClient: ratesClient))
     }

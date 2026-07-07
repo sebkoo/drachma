@@ -2,19 +2,21 @@ import XCTest
 import DrachmaCore
 @testable import DrachmaApp
 
-private struct StubRates: RatesClient {
+private struct StubRates: PairRatesProviding {
     var rates: [String: Decimal]
     var date = "2026-07-06"
+    var source: RateSource? = .ecb
     var shouldFail = false
 
-    func latestRates(base: String) async throws -> RatesSnapshot {
+    func latestRates(base: String, quote: String) async throws -> RatesSnapshot {
         if shouldFail { throw RatesClientError.badStatus(500) }
-        return RatesSnapshot(base: base, date: date, rates: rates)
+        return RatesSnapshot(base: base, date: date, rates: rates, source: source)
     }
+}
 
-    func rates(on day: String, base: String) async throws -> RatesSnapshot {
-        try await latestRates(base: base)
-    }
+@MainActor
+private func makeModel(_ stub: StubRates, catalog: [String] = []) -> ConverterViewModel {
+    ConverterViewModel(ratesClient: stub, currencyCatalog: { catalog })
 }
 
 @MainActor
@@ -25,7 +27,7 @@ final class ConverterViewModelTests: XCTestCase {
     ]
 
     func testLoadPopulatesSnapshotAndHonestDate() async {
-        let model = ConverterViewModel(ratesClient: StubRates(rates: fixtureRates))
+        let model = makeModel(StubRates(rates: fixtureRates))
 
         await model.load()
 
@@ -35,7 +37,7 @@ final class ConverterViewModelTests: XCTestCase {
     }
 
     func testConvertedAmountUsesTheSnapshot() async {
-        let model = ConverterViewModel(ratesClient: StubRates(rates: fixtureRates))
+        let model = makeModel(StubRates(rates: fixtureRates))
         await model.load()
 
         model.amountText = "100"
@@ -45,7 +47,7 @@ final class ConverterViewModelTests: XCTestCase {
     }
 
     func testInvalidAmountYieldsNoConversion() async {
-        let model = ConverterViewModel(ratesClient: StubRates(rates: fixtureRates))
+        let model = makeModel(StubRates(rates: fixtureRates))
         await model.load()
 
         model.amountText = "not a number"
@@ -54,7 +56,7 @@ final class ConverterViewModelTests: XCTestCase {
     }
 
     func testFailureSetsFailedStateAndConvertsNothing() async {
-        let model = ConverterViewModel(ratesClient: StubRates(rates: [:], shouldFail: true))
+        let model = makeModel(StubRates(rates: [:], shouldFail: true))
 
         await model.load()
 
@@ -66,7 +68,7 @@ final class ConverterViewModelTests: XCTestCase {
     }
 
     func testSwapExchangesCurrenciesAndReloads() async {
-        let model = ConverterViewModel(ratesClient: StubRates(rates: fixtureRates))
+        let model = makeModel(StubRates(rates: fixtureRates))
         await model.load()
 
         await model.swapCurrencies()
@@ -86,9 +88,37 @@ final class ConverterViewModelTests: XCTestCase {
     }
 
     func testAvailableCurrenciesIncludeBaseAndQuotes() async {
-        let model = ConverterViewModel(ratesClient: StubRates(rates: fixtureRates))
+        let model = makeModel(StubRates(rates: fixtureRates))
         await model.load()
 
         XCTAssertEqual(model.availableCurrencies, ["EUR", "KRW", "USD"])
+    }
+
+    func testCatalogUnionsWithECBCodesAndWinsOverSnapshot() async {
+        let model = makeModel(StubRates(rates: fixtureRates), catalog: ["VND", "COP"])
+        await model.load()
+
+        XCTAssertTrue(model.availableCurrencies.contains("VND"))
+        XCTAssertTrue(model.availableCurrencies.contains("KRW"), "ECB codes stay pickable")
+    }
+
+    func testSourceLabelsAreHonest() async {
+        let ecb = makeModel(StubRates(rates: fixtureRates, source: .ecb))
+        await ecb.load()
+        XCTAssertEqual(ecb.sourceLabel, "ECB reference rate")
+
+        let community = makeModel(StubRates(rates: ["VND": 26150], source: .community))
+        await community.load()
+        XCTAssertEqual(community.sourceLabel, "Community rate (currency-api) · indicative")
+    }
+
+    func testHistoryHiddenForNonECBPairs() async {
+        let model = makeModel(StubRates(rates: ["VND": 26150], source: .community))
+        model.toCurrency = "VND"
+
+        XCTAssertFalse(model.isHistoryAvailable)
+
+        model.toCurrency = "EUR"
+        XCTAssertTrue(model.isHistoryAvailable)
     }
 }
