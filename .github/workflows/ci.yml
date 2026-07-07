@@ -16,3 +16,20 @@ jobs:
         run: swift build
       - name: Test
         run: swift test
+
+  # swift test covers the package, but the app shell and the widget extension
+  # only compile inside the Xcode project — so CI regenerates it and builds
+  # both targets for the simulator (no signing) to catch what SPM can't.
+  app-build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate project
+        run: xcodegen generate
+      - name: Build app + widget for iOS Simulator
+        run: >
+          xcodebuild -project Drachma.xcodeproj -scheme Drachma
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO -quiet build
