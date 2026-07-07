@@ -31,6 +31,13 @@ public struct DrachmaRootView: View {
                     ))
                 }
             }
+            .task {
+                // Screenshot/UI-automation hook: `simctl launch ... --open-history`
+                // lands on the chart without a human tap.
+                if ProcessInfo.processInfo.arguments.contains("--open-history") {
+                    coordinator.push(.history(base: converter.fromCurrency, quote: converter.toCurrency))
+                }
+            }
         }
     }
 }
