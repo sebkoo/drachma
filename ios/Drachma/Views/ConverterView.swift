@@ -3,14 +3,20 @@ import DrachmaCore
 
 public struct ConverterView: View {
     @Bindable private var model: ConverterViewModel
+    private let favorites: FavoritesStore
     private let staticControls: Bool
 
     /// `staticControls` renders the same data through a pure-SwiftUI layout so
     /// ImageRenderer can snapshot it. Lesson carried over from Pulse and
     /// extended here: ImageRenderer draws neither the platform-backed controls
     /// (TextField, Picker, Button) nor `Form` itself.
-    public init(model: ConverterViewModel, staticControls: Bool = false) {
+    public init(
+        model: ConverterViewModel,
+        favorites: FavoritesStore = FavoritesStore(),
+        staticControls: Bool = false
+    ) {
         self._model = Bindable(model)
+        self.favorites = favorites
         self.staticControls = staticControls
     }
 
@@ -47,6 +53,42 @@ public struct ConverterView: View {
                 result
             } footer: {
                 honestFooter
+            }
+
+            Section {
+                ForEach(favorites.pairs, id: \.self) { pair in
+                    Button {
+                        model.fromCurrency = pair.base
+                        model.toCurrency = pair.quote
+                    } label: {
+                        HStack {
+                            Text("\(pair.base) → \(pair.quote)")
+                            Spacer()
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .contextMenu {
+                        Button("Remove", role: .destructive) {
+                            favorites.remove(pair)
+                        }
+                    }
+                }
+
+                let current = FavoritePair(base: model.fromCurrency, quote: model.toCurrency)
+                Button {
+                    favorites.add(current)
+                } label: {
+                    Label("Save this pair", systemImage: "star")
+                }
+                .disabled(favorites.isAtLimit || favorites.pairs.contains(current))
+            } header: {
+                Text("Favorites")
+            } footer: {
+                if favorites.isAtLimit {
+                    // The seam made visible — honestly, before any paywall exists.
+                    Text("The free tier holds 5 pairs. Unlimited pairs arrive with Pro.")
+                }
             }
         }
         .task { await model.load() }

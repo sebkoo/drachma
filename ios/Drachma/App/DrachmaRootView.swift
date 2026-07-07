@@ -7,6 +7,7 @@ import DrachmaCore
 public struct DrachmaRootView: View {
     @State private var coordinator = AppCoordinator()
     @State private var converter: ConverterViewModel
+    @State private var favorites = FavoritesStore()
 
     public init(
         ratesClient: any RatesClient = CachedRatesClient(wrapping: FrankfurterClient())
@@ -16,7 +17,7 @@ public struct DrachmaRootView: View {
 
     public var body: some View {
         NavigationStack(path: Bindable(coordinator).path) {
-            ConverterView(model: converter)
+            ConverterView(model: converter, favorites: favorites)
                 .navigationTitle("Drachma")
         }
     }
