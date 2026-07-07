@@ -17,6 +17,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/modelcontextprotocol/swift-sdk.git", from: "0.12.1"),
         .package(url: "https://github.com/hummingbird-project/hummingbird.git", from: "2.25.0"),
+        // Used only on Linux (macOS uses the system CryptoKit); see PKCE.swift.
+        .package(url: "https://github.com/apple/swift-crypto.git", "3.0.0"..<"5.0.0"),
     ],
     targets: [
         .target(
@@ -50,6 +52,10 @@ let package = Package(
         ),
         .target(
             name: "DrachmaAuth",
+            dependencies: [
+                // Resolves `import Crypto` on Linux; inert on macOS (CryptoKit).
+                .product(name: "Crypto", package: "swift-crypto"),
+            ],
             path: "Sources/DrachmaAuth"
         ),
         .testTarget(
