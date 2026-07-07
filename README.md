@@ -60,11 +60,12 @@ Note the `rateDate`: this was recorded early Tuesday (CET), so the ECB reference
 
 ## What the human sees
 
-Left: the real app running on an iPhone 16 Pro simulator with live ECB data. Right: dark mode, rendered straight from the real `ConverterView` by `swift run render-screenshots`.
+The real app on an iPhone 16 Pro simulator with live ECB data — converter, 7-day history (Swift Charts), and dark mode (rendered from the same view by `swift run render-screenshots`):
 
 <p>
-<img src="docs/screenshots/simulator.png" width="300" alt="Drachma running on the iOS simulator: $100.00 = €87.60 with live ECB data, a 7-day history link, favorites, and the footer 'ECB reference rate · 2026-07-06 · not a tradable quote'" />
-<img src="docs/screenshots/converter-dark.png" width="380" alt="Drachma converter, dark mode: the same screen with semantic colors adapting automatically" />
+<img src="docs/screenshots/simulator.png" width="260" alt="Drachma running on the iOS simulator: $100.00 = €87.60 with live ECB data, a 7-day history link, favorites, and the footer 'ECB reference rate · 2026-07-06 · not a tradable quote'" />
+<img src="docs/screenshots/history.png" width="260" alt="USD to EUR 7-day history chart with working-day ECB reference points and the honest footnote" />
+<img src="docs/screenshots/converter-dark.png" width="260" alt="Drachma converter, dark mode: the same screen with semantic colors adapting automatically" />
 </p>
 
 The footer line is the manifesto at work: every number carries its date.
