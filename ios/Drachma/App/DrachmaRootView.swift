@@ -17,8 +17,20 @@ public struct DrachmaRootView: View {
 
     public var body: some View {
         NavigationStack(path: Bindable(coordinator).path) {
-            ConverterView(model: converter, favorites: favorites)
-                .navigationTitle("Drachma")
+            ConverterView(model: converter, favorites: favorites) {
+                coordinator.push(.history(base: converter.fromCurrency, quote: converter.toCurrency))
+            }
+            .navigationTitle("Drachma")
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .history(let base, let quote):
+                    HistoryView(model: HistoryViewModel(
+                        seriesClient: FrankfurterClient(),
+                        base: base,
+                        quote: quote
+                    ))
+                }
+            }
         }
     }
 }

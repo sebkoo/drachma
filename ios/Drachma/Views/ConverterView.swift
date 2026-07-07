@@ -5,6 +5,8 @@ public struct ConverterView: View {
     @Bindable private var model: ConverterViewModel
     private let favorites: FavoritesStore
     private let staticControls: Bool
+    /// The view requests navigation; whoever owns the coordinator decides.
+    private let onShowHistory: (() -> Void)?
 
     /// `staticControls` renders the same data through a pure-SwiftUI layout so
     /// ImageRenderer can snapshot it. Lesson carried over from Pulse and
@@ -13,11 +15,13 @@ public struct ConverterView: View {
     public init(
         model: ConverterViewModel,
         favorites: FavoritesStore = FavoritesStore(),
-        staticControls: Bool = false
+        staticControls: Bool = false,
+        onShowHistory: (() -> Void)? = nil
     ) {
         self._model = Bindable(model)
         self.favorites = favorites
         self.staticControls = staticControls
+        self.onShowHistory = onShowHistory
     }
 
     public var body: some View {
@@ -51,6 +55,14 @@ public struct ConverterView: View {
 
             Section {
                 result
+
+                if case .loaded = model.state, let onShowHistory {
+                    Button {
+                        onShowHistory()
+                    } label: {
+                        Label("7-day history", systemImage: "chart.line.uptrend.xyaxis")
+                    }
+                }
             } footer: {
                 honestFooter
             }
