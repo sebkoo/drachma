@@ -60,14 +60,18 @@ Note the `rateDate`: this was recorded early Tuesday (CET), so the ECB reference
 
 ## What the human sees
 
-The converter screen in light and dark, rendered straight from the real `ConverterView` by `swift run render-screenshots` — no simulator, no mockups — with the actual ECB reference rates of 2026-07-06:
+Left: the real app running on an iPhone 16 Pro simulator with live ECB data. Right: dark mode, rendered straight from the real `ConverterView` by `swift run render-screenshots`.
 
 <p>
-<img src="docs/screenshots/converter.png" width="380" alt="Drachma converter, light mode: $100.00 = €87.60, with the footer 'ECB reference rate · 2026-07-06 · not a tradable quote'" />
+<img src="docs/screenshots/simulator.png" width="300" alt="Drachma running on the iOS simulator: $100.00 = €87.60 with live ECB data, a 7-day history link, favorites, and the footer 'ECB reference rate · 2026-07-06 · not a tradable quote'" />
 <img src="docs/screenshots/converter-dark.png" width="380" alt="Drachma converter, dark mode: the same screen with semantic colors adapting automatically" />
 </p>
 
 The footer line is the manifesto at work: every number carries its date.
+
+### Run the app
+
+Open `Drachma.xcodeproj` and hit run — the shell is a thin `@main` around the package's `DrachmaRootView`. The project file is generated: edit `project.yml` and regenerate with [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`xcodegen generate`).
 
 ## Layout
 
