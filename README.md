@@ -31,7 +31,16 @@ For a one-off "usd to eur", Google is fine — honestly. Drachma is for the **re
 
 `drachma-mcp` is the AI-agent door to the same kitchen. Any MCP-compatible client gets three tools — `convert`, `latest_rates`, `historical_rates` — with zero configuration: nothing to sign up for, no key to paste.
 
-### Try it today (from source)
+### Try it today
+
+Grab the prebuilt macOS binary from the [latest release](https://github.com/sebkoo/drachma/releases/latest) (built and published automatically by a tag-driven GitHub Actions pipeline, with a SHA-256 to verify), then:
+
+```sh
+tar -xzf drachma-mcp-*-macos-arm64.tar.gz
+claude mcp add drachma -- "$PWD/drachma-mcp"
+```
+
+Or from source:
 
 ```sh
 git clone https://github.com/sebkoo/drachma && cd drachma
@@ -39,7 +48,7 @@ swift build -c release
 claude mcp add drachma -- "$PWD/.build/release/drachma-mcp"
 ```
 
-A Homebrew tap and prebuilt binaries are on the roadmap.
+A Homebrew tap is on the roadmap.
 
 ### What the agent sees
 
@@ -123,6 +132,8 @@ And because Drachma is fully open source — Pro code included — you can alway
 - [ ] App Store release + Drachma Pro (unlimited widgets/alerts/pairs, full charts, Apple Watch)
 - [ ] Localization (EU languages first — it's ECB data, after all)
 - [x] OAuth 2.1 (PKCE) authorization server + resource-server enforcement for the MCP HTTP transport (`DrachmaAuth`)
+- [x] Tag-driven release pipeline (GitHub Actions builds & publishes the versioned `drachma-mcp` binary + SHA-256 to a GitHub Release)
+- [ ] Homebrew tap pointing at the released binary
 - [ ] Bind a socket adapter (Hummingbird) to serve `drachma-mcp` over authenticated HTTP
 - [ ] An institutional wide-coverage source (IMF representative / UN operational rates) as a third labeled provider behind the same protocol
 
