@@ -112,6 +112,25 @@ final class ConverterViewModelTests: XCTestCase {
         XCTAssertEqual(community.sourceLabel, "Community rate (currency-api) · indicative")
     }
 
+    func testFilterMatchesCodePrefixAndNameSubstring() {
+        let options = [
+            CurrencyOption(code: "VND"),
+            CurrencyOption(code: "KRW"),
+            CurrencyOption(code: "USD"),
+        ]
+
+        XCTAssertEqual(ConverterViewModel.filter(options, query: "vnd").map(\.code), ["VND"])
+        XCTAssertEqual(ConverterViewModel.filter(options, query: "").count, 3)
+        // Name matching depends on the locale's currency names; "won" is a
+        // safe substring of KRW's English name on CI (South Korean Won).
+        XCTAssertTrue(ConverterViewModel.filter(options, query: "won").map(\.code).contains("KRW"))
+    }
+
+    func testUnknownCodeFallsBackToItself() {
+        XCTAssertEqual(CurrencyOption(code: "zzz").code, "ZZZ")
+        XCTAssertEqual(CurrencyOption(code: "zzz").name, "ZZZ")
+    }
+
     func testHistoryHiddenForNonECBPairs() async {
         let model = makeModel(StubRates(rates: ["VND": 26150], source: .community))
         model.toCurrency = "VND"

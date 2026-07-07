@@ -111,6 +111,7 @@ And because Drachma is fully open source — Pro code included — you can alway
 - [ ] Free tastes: 1 widget, 1 rate alert, 7-day chart
 - [ ] App Store release + Drachma Pro (unlimited widgets/alerts/pairs, full charts, Apple Watch)
 - [ ] Localization (EU languages first — it's ECB data, after all)
+- [ ] An institutional wide-coverage source (IMF representative / UN operational rates) as a third labeled provider behind the same protocol
 
 Issues are the living version of this list.
 

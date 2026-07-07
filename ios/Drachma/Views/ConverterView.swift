@@ -2,7 +2,13 @@ import SwiftUI
 import DrachmaCore
 
 public struct ConverterView: View {
+    private enum PickerTarget: String, Identifiable {
+        case from, to
+        var id: String { rawValue }
+    }
+
     @Bindable private var model: ConverterViewModel
+    @State private var pickerTarget: PickerTarget?
     private let favorites: FavoritesStore
     private let staticControls: Bool
     /// The view requests navigation; whoever owns the coordinator decides.
@@ -39,12 +45,21 @@ public struct ConverterView: View {
             Section {
                 TextField("Amount", text: $model.amountText)
 
-                Picker("From", selection: $model.fromCurrency) {
-                    ForEach(model.availableCurrencies, id: \.self) { Text($0) }
+                Button {
+                    pickerTarget = .from
+                } label: {
+                    LabeledContent("From") { Text(model.fromCurrency) }
+                        .contentShape(Rectangle())
                 }
-                Picker("To", selection: $model.toCurrency) {
-                    ForEach(model.availableCurrencies, id: \.self) { Text($0) }
+                .buttonStyle(.plain)
+
+                Button {
+                    pickerTarget = .to
+                } label: {
+                    LabeledContent("To") { Text(model.toCurrency) }
+                        .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
 
                 Button {
                     Task { await model.swapCurrencies() }
@@ -111,6 +126,17 @@ public struct ConverterView: View {
             // The pair decides the source (ECB vs community), so quote
             // changes reload too.
             Task { await model.load() }
+        }
+        .sheet(item: $pickerTarget) { target in
+            CurrencySelectorView(
+                title: target == .from ? "From" : "To",
+                options: model.currencyOptions
+            ) { code in
+                switch target {
+                case .from: model.fromCurrency = code
+                case .to: model.toCurrency = code
+                }
+            }
         }
     }
 

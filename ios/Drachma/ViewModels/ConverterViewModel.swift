@@ -2,6 +2,23 @@ import Foundation
 import Observation
 import DrachmaCore
 
+/// A pickable currency: ISO code plus a display name resolved through
+/// Foundation's Locale — offline, and localized to the user's language
+/// ("Vietnamese Dong" / "베트남 동"), so search-by-country works for free.
+public struct CurrencyOption: Identifiable, Hashable, Sendable {
+    public let code: String
+    public let name: String
+
+    public var id: String { code }
+
+    public init(code: String) {
+        let upper = code.uppercased()
+        self.code = upper
+        let localized = Locale.current.localizedString(forCurrencyCode: upper)
+        self.name = (localized == nil || localized == upper) ? upper : localized!
+    }
+}
+
 @Observable @MainActor
 public final class ConverterViewModel {
     public enum LoadState: Equatable {
@@ -78,6 +95,21 @@ public final class ConverterViewModel {
         if !catalog.isEmpty { return catalog }
         guard let snapshot else { return [fromCurrency, toCurrency].sorted() }
         return Array(Set(snapshot.rates.keys).union([snapshot.base])).sorted()
+    }
+
+    public var currencyOptions: [CurrencyOption] {
+        availableCurrencies.map(CurrencyOption.init(code:))
+    }
+
+    /// Matches the code by prefix and the (localized) name by substring, so
+    /// "vnd", "viet", and "won" all find their currency. Pure — testable
+    /// without a locale fixture.
+    nonisolated static func filter(_ options: [CurrencyOption], query: String) -> [CurrencyOption] {
+        let trimmed = query.trimmingCharacters(in: .whitespaces).lowercased()
+        guard !trimmed.isEmpty else { return options }
+        return options.filter {
+            $0.code.lowercased().hasPrefix(trimmed) || $0.name.lowercased().contains(trimmed)
+        }
     }
 
     public func load() async {
