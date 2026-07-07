@@ -83,6 +83,32 @@ public struct ConverterView: View {
             }
 
             Section {
+                TextField(
+                    "1 \(model.fromCurrency) = ? \(model.toCurrency)",
+                    text: $model.quotedRateText
+                )
+
+                if let check = model.rateCheck {
+                    VStack(alignment: .leading, spacing: 4) {
+                        let percent = abs((check.markupPercent as NSDecimalNumber).doubleValue)
+                        Text("\(percent, specifier: "%.1f")% \(check.markupPercent >= 0 ? "worse" : "better") than mid-market")
+                            .font(.headline)
+                        Text(check.verdict)
+                            .foregroundStyle(.secondary)
+                        if check.looksFlipped {
+                            Text("These numbers look flipped — did they quote \(model.fromCurrency) per \(model.toCurrency)?")
+                                .font(.footnote)
+                                .foregroundStyle(.orange)
+                        }
+                    }
+                }
+            } header: {
+                Text("Rate check")
+            } footer: {
+                Text("Type the rate a counter or kiosk offers you — today's mid-market rate is the yardstick. No data leaves the device.")
+            }
+
+            Section {
                 ForEach(favorites.pairs, id: \.self) { pair in
                     Button {
                         model.fromCurrency = pair.base

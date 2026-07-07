@@ -22,6 +22,7 @@ For a one-off "usd to eur", Google is fine — honestly. Drachma is for the **re
 | You are… | Drachma gives you |
 |---|---|
 | A traveler converting street prices all day | A Home/Lock Screen **widget** pinned to your pair — zero taps — and **offline** cached rates when there's no signal |
+| Someone standing at an exchange counter | **Rate check** — type the rate they offered; the mid-market yardstick says how many percent you'd lose, and whether to walk away. No external data, works offline |
 | A remitter watching one pair every morning | **Rate alerts** and a history chart, so you send on a good day |
 | A cross-border freelancer invoicing monthly | A multi-pair dashboard with paste-friendly, as-you-type conversion |
 | An AI agent (Claude, etc.) | The **`drachma-mcp` server** — FX tools inside the conversation, no key to provision |

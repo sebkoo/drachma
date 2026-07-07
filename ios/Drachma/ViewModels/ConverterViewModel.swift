@@ -31,6 +31,9 @@ public final class ConverterViewModel {
     public var amountText = "100"
     public var fromCurrency = "USD"
     public var toCurrency = "EUR"
+    /// Rate check: the rate a counter/kiosk offered, in the displayed
+    /// direction (1 from-currency = ? to-currency).
+    public var quotedRateText = ""
     public private(set) var snapshot: RatesSnapshot?
     public private(set) var state: LoadState = .idle
     /// The full pickable catalog (community list ∪ ECB); falls back to the
@@ -109,6 +112,45 @@ public final class ConverterViewModel {
         guard !trimmed.isEmpty else { return options }
         return options.filter {
             $0.code.lowercased().hasPrefix(trimmed) || $0.name.lowercased().contains(trimmed)
+        }
+    }
+
+    public struct RateCheckResult: Equatable, Sendable {
+        /// Positive = the quote is worse than mid-market by this percent.
+        public let markupPercent: Decimal
+        public let verdict: String
+        /// The quote is wildly off mid-market — probably entered in the
+        /// opposite direction (KRW per USD instead of USD per KRW).
+        public let looksFlipped: Bool
+    }
+
+    /// The anti-rip-off meter: no external data — today's mid-market rate is
+    /// the yardstick every counter quote gets measured against.
+    public var rateCheck: RateCheckResult? {
+        guard let snapshot,
+              let quoted = Self.parseAmount(quotedRateText), quoted > 0,
+              let mid = try? snapshot.convert(1, from: fromCurrency, to: toCurrency), mid > 0
+        else { return nil }
+
+        let markup = (mid - quoted) / mid * 100
+        let ratio = quoted / mid
+        return RateCheckResult(
+            markupPercent: markup,
+            verdict: Self.verdict(forMarkupPercent: markup),
+            looksFlipped: ratio < Decimal(string: "0.05")! || ratio > 20
+        )
+    }
+
+    /// Bands follow the spreads travelers actually meet: fintech cards run
+    /// ~0.5–1%, bank counters ~2–5%, airport kiosks ~5–12%.
+    nonisolated static func verdict(forMarkupPercent markup: Decimal) -> String {
+        switch markup {
+        case ..<0: "Better than mid-market — double-check the quote"
+        case ..<1: "Excellent — near mid-market"
+        case ..<3: "Fair — typical card or fintech spread"
+        case ..<6: "High — typical bank counter"
+        case ..<12: "Very high — airport-kiosk territory"
+        default: "Walk away"
         }
     }
 

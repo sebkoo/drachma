@@ -131,6 +131,51 @@ final class ConverterViewModelTests: XCTestCase {
         XCTAssertEqual(CurrencyOption(code: "zzz").name, "ZZZ")
     }
 
+    func testRateCheckMeasuresAgainstMidMarket() async {
+        let model = makeModel(StubRates(rates: fixtureRates))
+        await model.load()
+        model.toCurrency = "EUR" // mid: 0.8
+
+        model.quotedRateText = "0.75"
+
+        let check = try! XCTUnwrap(model.rateCheck)
+        XCTAssertEqual((check.markupPercent as NSDecimalNumber).doubleValue, 6.25, accuracy: 0.001)
+        XCTAssertEqual(check.verdict, "Very high — airport-kiosk territory")
+        XCTAssertFalse(check.looksFlipped)
+    }
+
+    func testRateCheckFlagsBetterThanMidAndFlippedQuotes() async {
+        let model = makeModel(StubRates(rates: fixtureRates))
+        await model.load()
+        model.toCurrency = "KRW" // mid: 1400
+
+        model.quotedRateText = "0.0007" // KRW per USD entered upside down
+        let flipped = try! XCTUnwrap(model.rateCheck)
+        XCTAssertTrue(flipped.looksFlipped)
+
+        model.quotedRateText = "1450" // better than mid
+        let better = try! XCTUnwrap(model.rateCheck)
+        XCTAssertTrue(better.markupPercent < 0)
+        XCTAssertEqual(better.verdict, "Better than mid-market — double-check the quote")
+    }
+
+    func testRateCheckIsNilForEmptyOrInvalidInput() async {
+        let model = makeModel(StubRates(rates: fixtureRates))
+        await model.load()
+
+        XCTAssertNil(model.rateCheck)
+        model.quotedRateText = "abc"
+        XCTAssertNil(model.rateCheck)
+    }
+
+    func testVerdictBands() {
+        XCTAssertEqual(ConverterViewModel.verdict(forMarkupPercent: Decimal(string: "0.5")!), "Excellent — near mid-market")
+        XCTAssertEqual(ConverterViewModel.verdict(forMarkupPercent: 2), "Fair — typical card or fintech spread")
+        XCTAssertEqual(ConverterViewModel.verdict(forMarkupPercent: 4), "High — typical bank counter")
+        XCTAssertEqual(ConverterViewModel.verdict(forMarkupPercent: 8), "Very high — airport-kiosk territory")
+        XCTAssertEqual(ConverterViewModel.verdict(forMarkupPercent: 15), "Walk away")
+    }
+
     func testHistoryHiddenForNonECBPairs() async {
         let model = makeModel(StubRates(rates: ["VND": 26150], source: .community))
         model.toCurrency = "VND"
