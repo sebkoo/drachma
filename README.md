@@ -116,7 +116,9 @@ And because Drachma is fully open source — Pro code included — you can alway
 - [x] `drachma-mcp`: `convert`, `latest_rates`, `historical_rates` (MCP Swift SDK)
 - [x] CI (GitHub Actions): build + test on every push
 - [x] iOS app: converter screen, favorite pairs, offline last-good cache with visible timestamps, paste support, dark mode, currency symbols
-- [ ] Free tastes: 1 widget, 1 rate alert, 7-day chart
+- [x] Free taste: the 7-day history chart
+- [x] Free taste: a configurable rate widget (small/medium — one pair, honestly dated and sourced)
+- [ ] Free taste: 1 rate alert
 - [ ] App Store release + Drachma Pro (unlimited widgets/alerts/pairs, full charts, Apple Watch)
 - [ ] Localization (EU languages first — it's ECB data, after all)
 - [ ] An institutional wide-coverage source (IMF representative / UN operational rates) as a third labeled provider behind the same protocol

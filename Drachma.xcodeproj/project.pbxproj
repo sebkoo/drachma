@@ -9,12 +9,42 @@
 /* Begin PBXBuildFile section */
 		3ED8A51488DC21D37705A9FA /* DrachmaApp in Frameworks */ = {isa = PBXBuildFile; productRef = 6625AB296B05562E8383ED51 /* DrachmaApp */; };
 		764F1BA15A45C1BD6B8087C4 /* DrachmaShellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34797D031A86C2BACE3D7BCE /* DrachmaShellApp.swift */; };
+		9FC55E9F636F19A8BB6B887C /* DrachmaWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 763B1A5F1D636D39F874B64F /* DrachmaWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A95C6A580F091DE96CADA1F5 /* DrachmaCore in Frameworks */ = {isa = PBXBuildFile; productRef = D0319D6780841C212D6D7662 /* DrachmaCore */; };
+		B87544B7BF5389C566D5995E /* DrachmaWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9CB6C22E124E450C97A1D3 /* DrachmaWidgets.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		378495E5F39AD0874D638D55 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 40BDAD9C0E5F85940EE5B0E7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E2A6E9C141F718BAF98BB051;
+			remoteInfo = DrachmaWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		5C40E94869ED61875A881117 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9FC55E9F636F19A8BB6B887C /* DrachmaWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		0A74E9A9A9F2794193806DFE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		34797D031A86C2BACE3D7BCE /* DrachmaShellApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrachmaShellApp.swift; sourceTree = "<group>"; };
 		606C7BD6A41EDBF05C224D1C /* Drachma.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Drachma.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		763B1A5F1D636D39F874B64F /* DrachmaWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DrachmaWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C652E99436D550C9002C1AE8 /* drachma */ = {isa = PBXFileReference; lastKnownFileType = folder; name = drachma; path = .; sourceTree = SOURCE_ROOT; };
+		CB9CB6C22E124E450C97A1D3 /* DrachmaWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrachmaWidgets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -26,13 +56,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		44E82BB7AFF389FBDA0F2862 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A95C6A580F091DE96CADA1F5 /* DrachmaCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5667AEBAC0C74655AC67047C /* Widgets */ = {
+			isa = PBXGroup;
+			children = (
+				CB9CB6C22E124E450C97A1D3 /* DrachmaWidgets.swift */,
+				0A74E9A9A9F2794193806DFE /* Info.plist */,
+			);
+			name = Widgets;
+			path = ios/Widgets;
+			sourceTree = "<group>";
+		};
 		8502D04D40921E0F8A762673 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				606C7BD6A41EDBF05C224D1C /* Drachma.app */,
+				763B1A5F1D636D39F874B64F /* DrachmaWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -42,6 +91,7 @@
 			children = (
 				ED306AA9B13E8901262EDDAB /* Packages */,
 				E3134ADC3015CB2959787871 /* Shell */,
+				5667AEBAC0C74655AC67047C /* Widgets */,
 				8502D04D40921E0F8A762673 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -72,10 +122,12 @@
 			buildPhases = (
 				FCB6653A4417B4F16EC33EE5 /* Sources */,
 				007B0C65DDE77AD19EB408A7 /* Frameworks */,
+				5C40E94869ED61875A881117 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				D7A566C986E47AF09463155E /* PBXTargetDependency */,
 			);
 			name = Drachma;
 			packageProductDependencies = (
@@ -84,6 +136,25 @@
 			productName = Drachma;
 			productReference = 606C7BD6A41EDBF05C224D1C /* Drachma.app */;
 			productType = "com.apple.product-type.application";
+		};
+		E2A6E9C141F718BAF98BB051 /* DrachmaWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F389CB2F1F0EE2740DED99E6 /* Build configuration list for PBXNativeTarget "DrachmaWidgets" */;
+			buildPhases = (
+				3DC83BEB687296404B7FFA1B /* Sources */,
+				44E82BB7AFF389FBDA0F2862 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DrachmaWidgets;
+			packageProductDependencies = (
+				D0319D6780841C212D6D7662 /* DrachmaCore */,
+			);
+			productName = DrachmaWidgets;
+			productReference = 763B1A5F1D636D39F874B64F /* DrachmaWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -114,11 +185,20 @@
 			projectRoot = "";
 			targets = (
 				05E9A275E61C80B696642AA4 /* Drachma */,
+				E2A6E9C141F718BAF98BB051 /* DrachmaWidgets */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3DC83BEB687296404B7FFA1B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B87544B7BF5389C566D5995E /* DrachmaWidgets.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FCB6653A4417B4F16EC33EE5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -128,6 +208,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D7A566C986E47AF09463155E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E2A6E9C141F718BAF98BB051 /* DrachmaWidgets */;
+			targetProxy = 378495E5F39AD0874D638D55 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		0602DD630538E434A4D82EFC /* Release */ = {
@@ -289,6 +377,44 @@
 			};
 			name = Release;
 		};
+		A70B8AABC82571AD651437AD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = ios/Widgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.sebkoo.drachma.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D7F5FE29B267762897565520 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = ios/Widgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.sebkoo.drachma.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -310,6 +436,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		F389CB2F1F0EE2740DED99E6 /* Build configuration list for PBXNativeTarget "DrachmaWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A70B8AABC82571AD651437AD /* Debug */,
+				D7F5FE29B267762897565520 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -323,6 +458,10 @@
 		6625AB296B05562E8383ED51 /* DrachmaApp */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DrachmaApp;
+		};
+		D0319D6780841C212D6D7662 /* DrachmaCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DrachmaCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

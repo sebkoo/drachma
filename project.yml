@@ -18,6 +18,7 @@ targets:
     dependencies:
       - package: DrachmaPackage
         product: DrachmaApp
+      - target: DrachmaWidgets
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
@@ -27,3 +28,26 @@ targets:
         MARKETING_VERSION: 0.1.0
         SWIFT_VERSION: "6.0"
         TARGETED_DEVICE_FAMILY: "1"
+  DrachmaWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - ios/Widgets
+    dependencies:
+      - package: DrachmaPackage
+        product: DrachmaCore
+    info:
+      path: ios/Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: Drachma Rate
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.sebkoo.drachma.widgets
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: 0.1.0
+        SWIFT_VERSION: "6.0"
+        SKIP_INSTALL: YES
