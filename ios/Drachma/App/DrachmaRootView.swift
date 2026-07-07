@@ -8,7 +8,9 @@ public struct DrachmaRootView: View {
     @State private var coordinator = AppCoordinator()
     @State private var converter: ConverterViewModel
 
-    public init(ratesClient: any RatesClient = FrankfurterClient()) {
+    public init(
+        ratesClient: any RatesClient = CachedRatesClient(wrapping: FrankfurterClient())
+    ) {
         _converter = State(initialValue: ConverterViewModel(ratesClient: ratesClient))
     }
 
