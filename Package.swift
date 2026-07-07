@@ -6,6 +6,7 @@ let package = Package(
     platforms: [.iOS(.v17), .macOS(.v14)],
     products: [
         .library(name: "DrachmaCore", targets: ["DrachmaCore"]),
+        .library(name: "DrachmaAuth", targets: ["DrachmaAuth"]),
         .library(name: "DrachmaApp", targets: ["DrachmaApp"]),
         .executable(name: "drachma-mcp", targets: ["DrachmaMCP"]),
         .executable(name: "render-screenshots", targets: ["RenderScreenshots"]),
@@ -43,6 +44,15 @@ let package = Package(
         .executableTarget(
             name: "RenderIcon",
             path: "tools/RenderIcon"
+        ),
+        .target(
+            name: "DrachmaAuth",
+            path: "Sources/DrachmaAuth"
+        ),
+        .testTarget(
+            name: "DrachmaAuthTests",
+            dependencies: ["DrachmaAuth", .product(name: "MCP", package: "swift-sdk")],
+            path: "Tests/DrachmaAuthTests"
         ),
         .executableTarget(
             name: "DrachmaMCP",

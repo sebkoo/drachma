@@ -122,9 +122,27 @@ And because Drachma is fully open source — Pro code included — you can alway
 - [ ] Free taste: 1 rate alert
 - [ ] App Store release + Drachma Pro (unlimited widgets/alerts/pairs, full charts, Apple Watch)
 - [ ] Localization (EU languages first — it's ECB data, after all)
+- [x] OAuth 2.1 (PKCE) authorization server + resource-server enforcement for the MCP HTTP transport (`DrachmaAuth`)
+- [ ] Bind a socket adapter (Hummingbird) to serve `drachma-mcp` over authenticated HTTP
 - [ ] An institutional wide-coverage source (IMF representative / UN operational rates) as a third labeled provider behind the same protocol
 
 Issues are the living version of this list.
+
+## Security — OAuth 2.1 for the MCP server
+
+Stdio is for a local agent on your own machine. To expose `drachma-mcp` over
+HTTP for remote agents, the SDK's Streamable-HTTP transport is gated by an
+OAuth 2.1 authorization server implemented from scratch in `DrachmaAuth`:
+
+- **PKCE (RFC 7636, S256 only)** — `plain` is refused, per OAuth 2.1. Verified against the RFC's canonical test vector.
+- **Authorization-code grant** — one-time, time-boxed codes bound to the client's PKCE challenge and requested scopes; redirect-URI and scope checks at the authorize step.
+- **Audience-bound access tokens** — issued for this resource server's identifier so a token minted for another server can't be replayed here (the token-substitution attack the MCP auth spec calls out).
+- **Resource-server enforcement** — a bridge builds the SDK's `BearerTokenValidator` from the authorization server: missing/expired/garbage tokens get `401`, insufficient scope gets `403`, and only a valid `rates:read` token reaches a tool.
+
+`DrachmaAuthTests` proves it end to end, including an unauthenticated MCP
+`initialize` call being rejected by the transport pipeline *before any tool
+runs*. Binding a socket adapter (e.g. Hummingbird) to serve it publicly is the
+one remaining step — the auth layer and the wiring are done and tested.
 
 ## The name
 
