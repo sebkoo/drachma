@@ -63,7 +63,7 @@ And because Drachma is fully open source — Pro code included — you can alway
 ## Roadmap
 
 - [x] Repo, package scaffold, MVVM-Coordinator layout
-- [ ] `DrachmaCore`: models + Frankfurter client + tests
+- [x] `DrachmaCore`: models + Frankfurter client + tests
 - [x] `drachma-mcp`: `convert`, `latest_rates`, `historical_rates` (MCP Swift SDK)
 - [ ] CI (GitHub Actions): build + test on every push
 - [ ] iOS app: converter screen, favorite pairs, offline last-good cache with visible timestamps, paste support, dark mode, currency symbols
