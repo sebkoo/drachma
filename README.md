@@ -26,7 +26,7 @@ For a one-off "usd to eur", Google is fine — honestly. Drachma is for the **re
 
 ## The MCP server
 
-`drachma-mcp` is the AI-agent door to the same kitchen. Any MCP-compatible client gets three tools — `convert`, `latest_rates`, `historical` — with zero configuration: nothing to sign up for, no key to paste.
+`drachma-mcp` is the AI-agent door to the same kitchen. Any MCP-compatible client gets three tools — `convert`, `latest_rates`, `historical_rates` — with zero configuration: nothing to sign up for, no key to paste.
 
 ```sh
 # once released:
@@ -64,7 +64,7 @@ And because Drachma is fully open source — Pro code included — you can alway
 
 - [x] Repo, package scaffold, MVVM-Coordinator layout
 - [ ] `DrachmaCore`: models + Frankfurter client + tests
-- [ ] `drachma-mcp`: `convert`, `latest_rates`, `historical` (MCP Swift SDK)
+- [x] `drachma-mcp`: `convert`, `latest_rates`, `historical_rates` (MCP Swift SDK)
 - [ ] CI (GitHub Actions): build + test on every push
 - [ ] iOS app: converter screen, favorite pairs, offline last-good cache with visible timestamps, paste support, dark mode, currency symbols
 - [ ] Free tastes: 1 widget, 1 rate alert, 7-day chart
