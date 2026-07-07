@@ -1,0 +1,19 @@
+# Containerize drachma-server for automated deployment. Multi-stage: build with
+# the full Swift toolchain, ship a slim runtime image.
+FROM swift:6.0-jammy AS build
+WORKDIR /app
+COPY Package.swift Package.resolved ./
+RUN swift package resolve
+COPY Sources ./Sources
+COPY Tests ./Tests
+RUN swift build -c release --product drachma-server
+
+FROM swift:6.0-jammy-slim
+WORKDIR /app
+COPY --from=build /app/.build/release/drachma-server /app/drachma-server
+EXPOSE 8080
+ENV PORT=8080
+# A non-root user, because this is a network service.
+RUN useradd --create-home drachma
+USER drachma
+ENTRYPOINT ["/app/drachma-server"]

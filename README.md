@@ -134,7 +134,7 @@ And because Drachma is fully open source — Pro code included — you can alway
 - [x] OAuth 2.1 (PKCE) authorization server + resource-server enforcement for the MCP HTTP transport (`DrachmaAuth`)
 - [x] Tag-driven release pipeline (GitHub Actions builds & publishes the versioned `drachma-mcp` binary + SHA-256 to a GitHub Release)
 - [ ] Homebrew tap pointing at the released binary
-- [ ] Bind a socket adapter (Hummingbird) to serve `drachma-mcp` over authenticated HTTP
+- [x] `drachma-server`: a Hummingbird RESTful API serving the OAuth-protected rates resource, containerized and pushed to GHCR by CI
 - [ ] An institutional wide-coverage source (IMF representative / UN operational rates) as a third labeled provider behind the same protocol
 
 Issues are the living version of this list.
@@ -152,8 +152,30 @@ OAuth 2.1 authorization server implemented from scratch in `DrachmaAuth`:
 
 `DrachmaAuthTests` proves it end to end, including an unauthenticated MCP
 `initialize` call being rejected by the transport pipeline *before any tool
-runs*. Binding a socket adapter (e.g. Hummingbird) to serve it publicly is the
-one remaining step — the auth layer and the wiring are done and tested.
+runs*.
+
+### `drachma-server` — the RESTful API, running
+
+`drachma-server` is a real Hummingbird web service that puts the OAuth server
+and the rates data behind HTTP:
+
+| Method & path | Auth | Purpose |
+|---|---|---|
+| `GET /health` | public | liveness |
+| `GET /.well-known/oauth-protected-resource` | public | RFC 9728 discovery |
+| `POST /oauth/authorize` | public | PKCE authorization-code issuance |
+| `POST /oauth/token` | public | code → access token |
+| `GET /v1/rates?base=USD&quote=EUR` | **Bearer `rates:read`** | live reference rate as JSON |
+
+```sh
+swift run drachma-server            # listens on :8080
+# → GET /v1/rates without a token returns 401 + WWW-Authenticate;
+#   run the authorize → token → rates flow to get 200.
+```
+
+It's containerized (`Dockerfile`, non-root) and the image is built and pushed
+to GHCR by the deploy workflow. `DrachmaServerTests` drives the whole
+authorize → token → protected-resource flow over HTTP.
 
 ## The name
 
