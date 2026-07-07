@@ -32,10 +32,16 @@ public struct DrachmaRootView: View {
                 }
             }
             .task {
-                // Screenshot/UI-automation hook: `simctl launch ... --open-history`
-                // lands on the chart without a human tap.
-                if ProcessInfo.processInfo.arguments.contains("--open-history") {
+                // Screenshot/UI-automation hooks — simctl can launch but not
+                // tap, so these land the app on a scene without a human.
+                let arguments = ProcessInfo.processInfo.arguments
+                if arguments.contains("--open-history") {
                     coordinator.push(.history(base: converter.fromCurrency, quote: converter.toCurrency))
+                }
+                if arguments.contains("--demo-vnd-check") {
+                    converter.toCurrency = "VND"
+                    converter.quotedRateText = "24500"
+                    await converter.load()
                 }
             }
         }

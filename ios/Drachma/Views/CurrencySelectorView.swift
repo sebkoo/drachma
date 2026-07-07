@@ -8,7 +8,17 @@ struct CurrencySelectorView: View {
     let onSelect: (String) -> Void
 
     @Environment(\.dismiss) private var dismiss
-    @State private var query = ""
+    @State private var query = Self.launchQuery()
+
+    /// Screenshot hook: `--picker-query=viet` prefills the search field so a
+    /// filtered chooser can be captured without typing.
+    private static func launchQuery() -> String {
+        for argument in ProcessInfo.processInfo.arguments
+        where argument.hasPrefix("--picker-query=") {
+            return String(argument.dropFirst("--picker-query=".count))
+        }
+        return ""
+    }
 
     var body: some View {
         NavigationStack {

@@ -144,7 +144,13 @@ public struct ConverterView: View {
                 }
             }
         }
-        .task { await model.load() }
+        .task {
+            await model.load()
+            // Screenshot hook (see DrachmaRootView): opens the chooser sheet.
+            if ProcessInfo.processInfo.arguments.contains("--open-picker") {
+                pickerTarget = .to
+            }
+        }
         .onChange(of: model.fromCurrency) {
             Task { await model.load() }
         }
