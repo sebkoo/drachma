@@ -6,6 +6,7 @@ let package = Package(
     platforms: [.iOS(.v17), .macOS(.v14)],
     products: [
         .library(name: "DrachmaCore", targets: ["DrachmaCore"]),
+        .library(name: "DrachmaApp", targets: ["DrachmaApp"]),
         .executable(name: "drachma-mcp", targets: ["DrachmaMCP"]),
     ],
     dependencies: [
@@ -20,6 +21,17 @@ let package = Package(
             name: "DrachmaCoreTests",
             dependencies: ["DrachmaCore"],
             path: "DrachmaCore/Tests"
+        ),
+        .target(
+            name: "DrachmaApp",
+            dependencies: ["DrachmaCore"],
+            path: "ios/Drachma",
+            exclude: ["README.md"]
+        ),
+        .testTarget(
+            name: "DrachmaAppTests",
+            dependencies: ["DrachmaApp", "DrachmaCore"],
+            path: "ios/DrachmaTests"
         ),
         .executableTarget(
             name: "DrachmaMCP",
