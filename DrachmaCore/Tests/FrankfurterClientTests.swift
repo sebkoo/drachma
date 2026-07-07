@@ -1,35 +1,6 @@
 import XCTest
 @testable import DrachmaCore
 
-/// Records requests across concurrency boundaries for assertions.
-private final class RequestBox: @unchecked Sendable {
-    private let lock = NSLock()
-    private var stored: [URL] = []
-
-    func append(_ url: URL?) {
-        lock.lock()
-        defer { lock.unlock() }
-        if let url { stored.append(url) }
-    }
-
-    var urls: [URL] {
-        lock.lock()
-        defer { lock.unlock() }
-        return stored
-    }
-}
-
-private struct StubHTTP: HTTPFetching {
-    let data: Data
-    let statusCode: Int
-    let box: RequestBox
-
-    func fetch(_ request: URLRequest) async throws -> (data: Data, statusCode: Int) {
-        box.append(request.url)
-        return (data, statusCode)
-    }
-}
-
 final class FrankfurterClientTests: XCTestCase {
     private let fixture = Data("""
     {"amount":1.0,"base":"USD","date":"2026-07-03","rates":{"EUR":0.8523,"KRW":1381.2}}

@@ -38,15 +38,28 @@ public struct FrankfurterClient: RatesClient {
     }
 
     private func snapshot(path: String, base: String) async throws -> RatesSnapshot {
+        try await get(path: path, query: [URLQueryItem(name: "base", value: base)])
+    }
+
+    private func get<Response: Decodable>(path: String, query: [URLQueryItem]) async throws -> Response {
         var components = URLComponents(
             url: baseURL.appending(path: path),
             resolvingAgainstBaseURL: false
         )
-        components?.queryItems = [URLQueryItem(name: "base", value: base)]
+        components?.queryItems = query
         guard let url = components?.url else { throw RatesClientError.malformedURL }
 
         let (data, status) = try await http.fetch(URLRequest(url: url))
         guard status == 200 else { throw RatesClientError.badStatus(status) }
-        return try JSONDecoder().decode(RatesSnapshot.self, from: data)
+        return try JSONDecoder().decode(Response.self, from: data)
+    }
+}
+
+extension FrankfurterClient: RatesSeriesClient {
+    public func series(from: String, to: String, base: String, quote: String) async throws -> RatesSeries {
+        try await get(path: "\(from)..\(to)", query: [
+            URLQueryItem(name: "base", value: base),
+            URLQueryItem(name: "symbols", value: quote),
+        ])
     }
 }
