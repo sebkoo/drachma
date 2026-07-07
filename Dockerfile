@@ -4,8 +4,10 @@ FROM swift:6.1-jammy AS build
 WORKDIR /app
 COPY Package.swift Package.resolved ./
 RUN swift package resolve
-COPY Sources ./Sources
-COPY Tests ./Tests
+# Copy the whole package: SPM validates every target's path at manifest load,
+# so all target directories must be present even to build one product.
+# (.dockerignore keeps .build/.git/docs/xcodeproj out of the context.)
+COPY . .
 RUN swift build -c release --product drachma-server
 
 FROM swift:6.1-jammy-slim
