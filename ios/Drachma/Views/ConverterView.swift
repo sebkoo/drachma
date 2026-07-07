@@ -111,8 +111,10 @@ public struct ConverterView: View {
                 Task { await model.load() }
             }
         case .loaded:
-            if let converted = model.convertedAmount {
-                Text("\(model.amountText) \(model.fromCurrency) = \(converted.formatted()) \(model.toCurrency)")
+            if let amount = model.amount, let converted = model.convertedAmount {
+                // .currency gives the right symbol and the right decimals per
+                // currency ("₩1,538", "€87.60") — a top ask in competitor reviews.
+                Text("\(amount.formatted(.currency(code: model.fromCurrency))) = \(converted.formatted(.currency(code: model.toCurrency)))")
                     .font(.title3.weight(.semibold))
             } else {
                 Text("Enter a valid amount")
