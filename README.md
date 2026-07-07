@@ -1,5 +1,7 @@
 # Drachma
 
+![CI](https://github.com/sebkoo/drachma/actions/workflows/ci.yml/badge.svg)
+
 Live currency conversion for humans **and** AI agents — a native iOS app and a Swift MCP server sharing one keyless public data source: the European Central Bank's reference rates, via the [Frankfurter API](https://frankfurter.dev).
 
 No API keys. No accounts. No tracking.
@@ -65,7 +67,7 @@ And because Drachma is fully open source — Pro code included — you can alway
 - [x] Repo, package scaffold, MVVM-Coordinator layout
 - [x] `DrachmaCore`: models + Frankfurter client + tests
 - [x] `drachma-mcp`: `convert`, `latest_rates`, `historical_rates` (MCP Swift SDK)
-- [ ] CI (GitHub Actions): build + test on every push
+- [x] CI (GitHub Actions): build + test on every push
 - [ ] iOS app: converter screen, favorite pairs, offline last-good cache with visible timestamps, paste support, dark mode, currency symbols
 - [ ] Free tastes: 1 widget, 1 rate alert, 7-day chart
 - [ ] App Store release + Drachma Pro (unlimited widgets/alerts/pairs, full charts, Apple Watch)

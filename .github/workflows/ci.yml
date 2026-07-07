@@ -1,0 +1,18 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      # Use the runner's default Xcode toolchain — pinning a path broke us once
+      # before (Pulse) and buys nothing here.
+      - name: Build
+        run: swift build
+      - name: Test
+        run: swift test
