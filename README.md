@@ -60,9 +60,12 @@ Note the `rateDate`: this was recorded early Tuesday (CET), so the ECB reference
 
 ## What the human sees
 
-The converter screen, rendered straight from the real `ConverterView` by `swift run render-screenshots` — no simulator, no mockups — with the actual ECB reference rates of 2026-07-06:
+The converter screen in light and dark, rendered straight from the real `ConverterView` by `swift run render-screenshots` — no simulator, no mockups — with the actual ECB reference rates of 2026-07-06:
 
-<img src="docs/screenshots/converter.png" width="400" alt="Drachma converter: 100 USD = 87.604 EUR, with the footer 'ECB reference rate · 2026-07-06 · not a tradable quote'" />
+<p>
+<img src="docs/screenshots/converter.png" width="380" alt="Drachma converter, light mode: $100.00 = €87.60, with the footer 'ECB reference rate · 2026-07-06 · not a tradable quote'" />
+<img src="docs/screenshots/converter-dark.png" width="380" alt="Drachma converter, dark mode: the same screen with semantic colors adapting automatically" />
+</p>
 
 The footer line is the manifesto at work: every number carries its date.
 

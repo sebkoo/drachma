@@ -6,11 +6,11 @@ import DrachmaCore
 import DrachmaApp
 
 // Renders README screenshots straight from the real views (Pulse playbook).
-// Usage: swift run render-screenshots [output.png]
+// Usage: swift run render-screenshots [output-directory]
 
 /// Deterministic fixture using the actual ECB reference rates of 2026-07-06,
-/// captured during the MCP smoke test — so the screenshot is reproducible and
-/// shows real numbers.
+/// captured during the MCP smoke test — so the screenshots are reproducible
+/// and show real numbers.
 struct FixtureRates: RatesClient {
     func latestRates(base: String) async throws -> RatesSnapshot {
         RatesSnapshot(base: "USD", date: "2026-07-06", rates: [
@@ -28,46 +28,50 @@ struct FixtureRates: RatesClient {
     }
 }
 
-let output = CommandLine.arguments.count > 1
-    ? URL(fileURLWithPath: CommandLine.arguments[1])
-    : URL(fileURLWithPath: "docs/screenshots/converter.png")
+let outputDirectory = URL(fileURLWithPath: CommandLine.arguments.count > 1
+    ? CommandLine.arguments[1]
+    : "docs/screenshots")
 
 let model = ConverterViewModel(ratesClient: FixtureRates())
 await model.load()
 model.amountText = "100"
 
-let content = VStack(alignment: .leading, spacing: 0) {
-    Text("Drachma")
-        .font(.largeTitle.bold())
-        .padding(.horizontal, 20)
-        .padding(.top, 18)
-    ConverterView(model: model, staticControls: true)
-        .formStyle(.grouped)
-}
-.frame(width: 393, height: 330, alignment: .top)
-.background(Color(nsColor: .windowBackgroundColor))
+@MainActor
+func render(scheme: ColorScheme, to url: URL) throws {
+    let content = VStack(alignment: .leading, spacing: 0) {
+        Text("Drachma")
+            .font(.largeTitle.bold())
+            .padding(.horizontal, 20)
+            .padding(.top, 18)
+        ConverterView(model: model, staticControls: true)
+    }
+    .frame(width: 393, height: 330, alignment: .top)
+    .background(scheme == .dark ? Color(white: 0.11) : Color(white: 0.96))
+    .environment(\.colorScheme, scheme)
 
-let renderer = ImageRenderer(content: content)
-renderer.scale = 2
+    let renderer = ImageRenderer(content: content)
+    renderer.scale = 2
 
-guard let image = renderer.cgImage else {
-    FileHandle.standardError.write(Data("render failed: ImageRenderer produced no image\n".utf8))
-    exit(1)
+    guard let image = renderer.cgImage else {
+        throw RenderError.noImage
+    }
+    guard let destination = CGImageDestinationCreateWithURL(
+        url as CFURL, UTType.png.identifier as CFString, 1, nil
+    ) else {
+        throw RenderError.cannotWrite(url.path)
+    }
+    CGImageDestinationAddImage(destination, image, nil)
+    guard CGImageDestinationFinalize(destination) else {
+        throw RenderError.cannotWrite(url.path)
+    }
+    print("wrote \(url.path) (\(image.width)x\(image.height))")
 }
 
-try FileManager.default.createDirectory(
-    at: output.deletingLastPathComponent(),
-    withIntermediateDirectories: true
-)
-guard let destination = CGImageDestinationCreateWithURL(
-    output as CFURL, UTType.png.identifier as CFString, 1, nil
-) else {
-    FileHandle.standardError.write(Data("render failed: cannot create \(output.path)\n".utf8))
-    exit(2)
+enum RenderError: Error {
+    case noImage
+    case cannotWrite(String)
 }
-CGImageDestinationAddImage(destination, image, nil)
-guard CGImageDestinationFinalize(destination) else {
-    FileHandle.standardError.write(Data("render failed: could not finalize PNG\n".utf8))
-    exit(3)
-}
-print("wrote \(output.path) (\(image.width)x\(image.height))")
+
+try FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
+try render(scheme: .light, to: outputDirectory.appendingPathComponent("converter.png"))
+try render(scheme: .dark, to: outputDirectory.appendingPathComponent("converter-dark.png"))
