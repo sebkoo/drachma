@@ -9,6 +9,7 @@ let package = Package(
         .library(name: "DrachmaApp", targets: ["DrachmaApp"]),
         .executable(name: "drachma-mcp", targets: ["DrachmaMCP"]),
         .executable(name: "render-screenshots", targets: ["RenderScreenshots"]),
+        .executable(name: "render-icon", targets: ["RenderIcon"]),
     ],
     dependencies: [
         .package(url: "https://github.com/modelcontextprotocol/swift-sdk.git", from: "0.12.1"),
@@ -38,6 +39,10 @@ let package = Package(
             name: "RenderScreenshots",
             dependencies: ["DrachmaApp", "DrachmaCore"],
             path: "tools/RenderScreenshots"
+        ),
+        .executableTarget(
+            name: "RenderIcon",
+            path: "tools/RenderIcon"
         ),
         .executableTarget(
             name: "DrachmaMCP",

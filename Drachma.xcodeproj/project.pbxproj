@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		15C93718F81A22380BBF7A40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42BA27B64E6E80DC69529638 /* Assets.xcassets */; };
 		3ED8A51488DC21D37705A9FA /* DrachmaApp in Frameworks */ = {isa = PBXBuildFile; productRef = 6625AB296B05562E8383ED51 /* DrachmaApp */; };
 		764F1BA15A45C1BD6B8087C4 /* DrachmaShellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34797D031A86C2BACE3D7BCE /* DrachmaShellApp.swift */; };
 		9FC55E9F636F19A8BB6B887C /* DrachmaWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 763B1A5F1D636D39F874B64F /* DrachmaWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -41,6 +42,7 @@
 /* Begin PBXFileReference section */
 		0A74E9A9A9F2794193806DFE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		34797D031A86C2BACE3D7BCE /* DrachmaShellApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrachmaShellApp.swift; sourceTree = "<group>"; };
+		42BA27B64E6E80DC69529638 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		606C7BD6A41EDBF05C224D1C /* Drachma.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Drachma.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		763B1A5F1D636D39F874B64F /* DrachmaWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DrachmaWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C652E99436D550C9002C1AE8 /* drachma */ = {isa = PBXFileReference; lastKnownFileType = folder; name = drachma; path = .; sourceTree = SOURCE_ROOT; };
@@ -99,6 +101,7 @@
 		E3134ADC3015CB2959787871 /* Shell */ = {
 			isa = PBXGroup;
 			children = (
+				42BA27B64E6E80DC69529638 /* Assets.xcassets */,
 				34797D031A86C2BACE3D7BCE /* DrachmaShellApp.swift */,
 			);
 			name = Shell;
@@ -121,6 +124,7 @@
 			buildConfigurationList = B61DE227D9C8D9FD308C9DE7 /* Build configuration list for PBXNativeTarget "Drachma" */;
 			buildPhases = (
 				FCB6653A4417B4F16EC33EE5 /* Sources */,
+				7FE8E0F3F52DE316BAD09937 /* Resources */,
 				007B0C65DDE77AD19EB408A7 /* Frameworks */,
 				5C40E94869ED61875A881117 /* Embed Foundation Extensions */,
 			);
@@ -189,6 +193,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7FE8E0F3F52DE316BAD09937 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15C93718F81A22380BBF7A40 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3DC83BEB687296404B7FFA1B /* Sources */ = {
