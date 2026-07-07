@@ -1,6 +1,16 @@
 import Foundation
 
-/// One day's ECB reference rates for a base currency, as served by Frankfurter.
+/// Where a rate came from — shown to the user, never hidden. The manifesto's
+/// timestamp principle, extended to provenance.
+public enum RateSource: String, Codable, Hashable, Sendable {
+    /// Official ECB reference rates (via Frankfurter). ~30 currencies.
+    case ecb
+    /// Community-sourced daily rates (via currency-api). 200+ currencies,
+    /// indicative — labeled as such wherever they appear.
+    case community
+}
+
+/// One day's reference rates for a base currency.
 public struct RatesSnapshot: Codable, Hashable, Sendable {
     /// ISO 4217 code the rates are quoted against, e.g. "EUR".
     public let base: String
@@ -15,9 +25,13 @@ public struct RatesSnapshot: Codable, Hashable, Sendable {
     /// carry at most 5–6 significant digits, well inside `Decimal` precision.
     public let rates: [String: Decimal]
 
-    public init(base: String, date: String, rates: [String: Decimal]) {
+    /// Which system the numbers came from; nil on older cached payloads.
+    public let source: RateSource?
+
+    public init(base: String, date: String, rates: [String: Decimal], source: RateSource? = nil) {
         self.base = base
         self.date = date
         self.rates = rates
+        self.source = source
     }
 }

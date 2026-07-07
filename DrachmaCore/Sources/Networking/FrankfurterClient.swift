@@ -29,6 +29,15 @@ public struct FrankfurterClient: RatesClient {
         self.baseURL = baseURL
     }
 
+    /// The currencies the ECB publishes reference rates for, per the live
+    /// Frankfurter /v1/currencies endpoint (verified 2026-07-07). The list has
+    /// been stable for years; composite routing keys off it.
+    public static let supportedCurrencyCodes: Set<String> = [
+        "AUD", "BRL", "CAD", "CHF", "CNY", "CZK", "DKK", "EUR", "GBP", "HKD",
+        "HUF", "IDR", "ILS", "INR", "ISK", "JPY", "KRW", "MXN", "MYR", "NOK",
+        "NZD", "PHP", "PLN", "RON", "SEK", "SGD", "THB", "TRY", "USD", "ZAR",
+    ]
+
     public func latestRates(base: String) async throws -> RatesSnapshot {
         try await snapshot(path: "latest", base: base)
     }
@@ -38,7 +47,8 @@ public struct FrankfurterClient: RatesClient {
     }
 
     private func snapshot(path: String, base: String) async throws -> RatesSnapshot {
-        try await get(path: path, query: [URLQueryItem(name: "base", value: base)])
+        let decoded: RatesSnapshot = try await get(path: path, query: [URLQueryItem(name: "base", value: base)])
+        return RatesSnapshot(base: decoded.base, date: decoded.date, rates: decoded.rates, source: .ecb)
     }
 
     private func get<Response: Decodable>(path: String, query: [URLQueryItem]) async throws -> Response {
