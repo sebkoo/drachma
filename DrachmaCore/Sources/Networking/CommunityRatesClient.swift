@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 /// Community-sourced daily rates via currency-api (fawazahmed0/exchange-api):
 /// 200+ currencies, keyless, CDN-served, refreshed daily. Everything it

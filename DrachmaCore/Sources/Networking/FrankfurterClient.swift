@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public enum RatesClientError: Error, Equatable, Sendable {
     case badStatus(Int)
