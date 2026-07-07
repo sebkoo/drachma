@@ -5,8 +5,10 @@ private struct TwoPairTier: EntitlementProviding {
     let maxFavoritePairs = 2
 }
 
-@MainActor
 final class FavoritesStoreTests: XCTestCase {
+    // XCTest lifecycle overrides are nonisolated, so the class must not be
+    // @MainActor under strict concurrency — each test method is, instead.
+    // (Caught by CI's stricter toolchain; the local one let it slide.)
     private var suiteName = ""
     private var defaults: UserDefaults!
 
@@ -21,6 +23,7 @@ final class FavoritesStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func testAddPersistsAcrossStoreInstances() {
         let first = FavoritesStore(defaults: defaults)
         XCTAssertTrue(first.add(FavoritePair(base: "usd", quote: "krw")))
@@ -30,6 +33,7 @@ final class FavoritesStoreTests: XCTestCase {
         XCTAssertEqual(reloaded.pairs, [FavoritePair(base: "USD", quote: "KRW")])
     }
 
+    @MainActor
     func testDuplicateAddIsRejected() {
         let store = FavoritesStore(defaults: defaults)
         store.add(FavoritePair(base: "USD", quote: "EUR"))
@@ -38,6 +42,7 @@ final class FavoritesStoreTests: XCTestCase {
         XCTAssertEqual(store.pairs.count, 1)
     }
 
+    @MainActor
     func testFreeTierCapsAtFivePairs() {
         let store = FavoritesStore(defaults: defaults)
         let quotes = ["EUR", "KRW", "JPY", "GBP", "CHF"]
@@ -50,6 +55,7 @@ final class FavoritesStoreTests: XCTestCase {
         XCTAssertEqual(store.pairs.count, 5)
     }
 
+    @MainActor
     func testTheSeamIsRealNotHardcoded() {
         let store = FavoritesStore(entitlements: TwoPairTier(), defaults: defaults)
         store.add(FavoritePair(base: "USD", quote: "EUR"))
@@ -59,6 +65,7 @@ final class FavoritesStoreTests: XCTestCase {
         XCTAssertFalse(store.add(FavoritePair(base: "USD", quote: "JPY")))
     }
 
+    @MainActor
     func testRemoveFreesASlot() {
         let store = FavoritesStore(entitlements: TwoPairTier(), defaults: defaults)
         let pair = FavoritePair(base: "USD", quote: "EUR")
