@@ -24,7 +24,7 @@ final class HistoryViewModelTests: XCTestCase {
     )
 
     func testWindowEndsAtNowAndSpansSevenDays() {
-        let end = Date(timeIntervalSince1970: 1_783_468_800) // 2026-07-07 UTC
+        let end = Date(timeIntervalSince1970: 1_783_382_400) // 2026-07-07T00:00:00Z
 
         let window = HistoryViewModel.window(endingAt: end, days: 7)
 
