@@ -30,10 +30,33 @@ For a one-off "usd to eur", Google is fine — honestly. Drachma is for the **re
 
 `drachma-mcp` is the AI-agent door to the same kitchen. Any MCP-compatible client gets three tools — `convert`, `latest_rates`, `historical_rates` — with zero configuration: nothing to sign up for, no key to paste.
 
+### Try it today (from source)
+
 ```sh
-# once released:
-claude mcp add drachma -- drachma-mcp
+git clone https://github.com/sebkoo/drachma && cd drachma
+swift build -c release
+claude mcp add drachma -- "$PWD/.build/release/drachma-mcp"
 ```
+
+A Homebrew tap and prebuilt binaries are on the roadmap.
+
+### What the agent sees
+
+A real session, recorded over raw MCP stdio — live data, no mock:
+
+```
+→ tools/call convert { "amount": 500000, "from": "KRW", "to": "USD" }
+← {
+    "amount" : 500000,
+    "converted" : 325,
+    "from" : "KRW",
+    "rateDate" : "2026-07-06",
+    "source" : "ECB reference rates via Frankfurter",
+    "to" : "USD"
+  }
+```
+
+Note the `rateDate`: this was recorded early Tuesday (CET), so the ECB reference day is still Monday — the server says so instead of pretending the number is live. That honesty is the product.
 
 ## Layout
 
