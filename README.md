@@ -61,7 +61,7 @@ Note the `rateDate`: this was recorded early Tuesday (CET), so the ECB reference
 
 ## What the human sees
 
-The real app on an iPhone 16 Pro simulator with live ECB data — converter, 7-day history (Swift Charts), and dark mode (rendered from the same view by `swift run render-screenshots`):
+The real app on an iPhone 16 Pro simulator with live data — converter, 7-day history (Swift Charts), and dark mode (rendered from the same view by `swift run render-screenshots`):
 
 <p>
 <img src="docs/screenshots/simulator.png" width="260" alt="Drachma running on the iOS simulator: $100.00 = €87.60 with live ECB data, a 7-day history link, favorites, and the footer 'ECB reference rate · 2026-07-06 · not a tradable quote'" />
@@ -69,7 +69,14 @@ The real app on an iPhone 16 Pro simulator with live ECB data — converter, 7-d
 <img src="docs/screenshots/converter-dark.png" width="260" alt="Drachma converter, dark mode: the same screen with semantic colors adapting automatically" />
 </p>
 
-The footer line is the manifesto at work: every number carries its date.
+And the traveler's kit — a community-covered pair with its source named, the rate-check verdict on a kiosk quote, and the searchable chooser that finds VND by typing "viet" (or "베트남" on a Korean device):
+
+<p>
+<img src="docs/screenshots/rate-check.png" width="260" alt="USD to VND: $100 = ₫2,630,021 with the footer 'Community rate (currency-api) · indicative', and rate check judging a 24,500 kiosk quote as 6.8% worse than mid-market — airport-kiosk territory" />
+<img src="docs/screenshots/search.png" width="260" alt="The currency chooser filtered by 'viet', showing VND — Vietnamese Dong" />
+</p>
+
+The footer line is the manifesto at work: every number carries its date — and its source.
 
 ### Run the app
 
