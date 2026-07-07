@@ -76,6 +76,15 @@ final class ConverterViewModelTests: XCTestCase {
         XCTAssertEqual(model.snapshot?.base, "EUR")
     }
 
+    func testPastedValuesParse() {
+        XCTAssertEqual(ConverterViewModel.parseAmount("1,234.56"), Decimal(string: "1234.56"))
+        XCTAssertEqual(ConverterViewModel.parseAmount("$100"), 100)
+        XCTAssertEqual(ConverterViewModel.parseAmount("₩1,500"), 1500)
+        XCTAssertEqual(ConverterViewModel.parseAmount(" 2 500 "), 2500)
+        XCTAssertNil(ConverterViewModel.parseAmount("not a number"))
+        XCTAssertNil(ConverterViewModel.parseAmount(""))
+    }
+
     func testAvailableCurrenciesIncludeBaseAndQuotes() async {
         let model = ConverterViewModel(ratesClient: StubRates(rates: fixtureRates))
         await model.load()

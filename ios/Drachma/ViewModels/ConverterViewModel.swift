@@ -24,7 +24,17 @@ public final class ConverterViewModel {
     }
 
     public var amount: Decimal? {
-        Decimal(string: amountText)
+        Self.parseAmount(amountText)
+    }
+
+    /// Tolerant of pasted values — currency symbols, grouping commas, spaces:
+    /// "1,234.56", "$100", "₩1,500" all parse. (A recurring complaint in
+    /// competitor reviews is amount fields that reject pasted text.)
+    /// Locale-aware separators ("1.234,56") arrive with localization.
+    static func parseAmount(_ text: String) -> Decimal? {
+        let cleaned = text.filter { $0.isNumber || $0 == "." }
+        guard cleaned.contains(where: \.isNumber) else { return nil }
+        return Decimal(string: cleaned)
     }
 
     public var convertedAmount: Decimal? {
