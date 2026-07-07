@@ -58,6 +58,14 @@ A real session, recorded over raw MCP stdio — live data, no mock:
 
 Note the `rateDate`: this was recorded early Tuesday (CET), so the ECB reference day is still Monday — the server says so instead of pretending the number is live. That honesty is the product.
 
+## What the human sees
+
+The converter screen, rendered straight from the real `ConverterView` by `swift run render-screenshots` — no simulator, no mockups — with the actual ECB reference rates of 2026-07-06:
+
+<img src="docs/screenshots/converter.png" width="400" alt="Drachma converter: 100 USD = 87.604 EUR, with the footer 'ECB reference rate · 2026-07-06 · not a tradable quote'" />
+
+The footer line is the manifesto at work: every number carries its date.
+
 ## Layout
 
 ```
