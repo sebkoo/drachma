@@ -35,17 +35,16 @@ private let rateJSON = Data("""
 
 @MainActor
 final class ConnectViewModelTests: XCTestCase {
-    private var defaults: UserDefaults!
-
-    // XCTestCase.setUp() is nonisolated by declaration, so a synchronous
-    // override can't touch this @MainActor class's stored properties. The
-    // async overload is fair game: overriding an async requirement with an
-    // isolated implementation is sound because every caller already awaits.
-    override func setUp() async throws {
-        try await super.setUp()
-        defaults = UserDefaults(suiteName: "ConnectViewModelTests")
+    // Lazy instead of a setUp() override: XCTestCase.setUp() is nonisolated
+    // by declaration, and calling it from this @MainActor class's override
+    // means sending non-Sendable self across that boundary — some toolchains
+    // accept it, others don't. A fresh instance per test method makes a
+    // lazily-cleared suite an equivalent, toolchain-independent stand-in.
+    private lazy var defaults: UserDefaults = {
+        let defaults = UserDefaults(suiteName: "ConnectViewModelTests")!
         defaults.removePersistentDomain(forName: "ConnectViewModelTests")
-    }
+        return defaults
+    }()
 
     private func makeModel(
         transport: RoutingTransport,
