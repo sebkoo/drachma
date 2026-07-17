@@ -37,8 +37,12 @@ private let rateJSON = Data("""
 final class ConnectViewModelTests: XCTestCase {
     private var defaults: UserDefaults!
 
-    override func setUp() {
-        super.setUp()
+    // XCTestCase.setUp() is nonisolated by declaration, so a synchronous
+    // override can't touch this @MainActor class's stored properties. The
+    // async overload is fair game: overriding an async requirement with an
+    // isolated implementation is sound because every caller already awaits.
+    override func setUp() async throws {
+        try await super.setUp()
         defaults = UserDefaults(suiteName: "ConnectViewModelTests")
         defaults.removePersistentDomain(forName: "ConnectViewModelTests")
     }
