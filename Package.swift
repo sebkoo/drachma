@@ -7,6 +7,7 @@ let package = Package(
     products: [
         .library(name: "DrachmaCore", targets: ["DrachmaCore"]),
         .library(name: "DrachmaAuth", targets: ["DrachmaAuth"]),
+        .library(name: "DrachmaAuthClient", targets: ["DrachmaAuthClient"]),
         .library(name: "DrachmaServer", targets: ["DrachmaServer"]),
         .library(name: "DrachmaApp", targets: ["DrachmaApp"]),
         .executable(name: "drachma-mcp", targets: ["DrachmaMCP"]),
@@ -62,6 +63,16 @@ let package = Package(
             name: "DrachmaAuthTests",
             dependencies: ["DrachmaAuth", .product(name: "MCP", package: "swift-sdk")],
             path: "Tests/DrachmaAuthTests"
+        ),
+        .target(
+            name: "DrachmaAuthClient",
+            dependencies: ["DrachmaAuth"],
+            path: "Sources/DrachmaAuthClient"
+        ),
+        .testTarget(
+            name: "DrachmaAuthClientTests",
+            dependencies: ["DrachmaAuthClient", "DrachmaAuth"],
+            path: "Tests/DrachmaAuthClientTests"
         ),
         .target(
             name: "DrachmaServer",
