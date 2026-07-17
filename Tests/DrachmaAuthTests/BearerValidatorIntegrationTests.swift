@@ -18,7 +18,7 @@ final class BearerValidatorIntegrationTests: XCTestCase {
             codeChallenge: PKCE.challenge(for: verifier)!,
             codeChallengeMethod: PKCE.method, scope: ["rates:read"]
         )
-        return try server.token(code: code, codeVerifier: verifier, clientID: "agent", redirectURI: redirect).value
+        return try server.token(code: code, codeVerifier: verifier, clientID: "agent", redirectURI: redirect).access.value
     }
 
     /// Bridges our OAuthServer to the SDK's bearer validator, enforcing the

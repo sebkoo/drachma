@@ -58,17 +58,17 @@ public enum DrachmaRouter {
                             status: .badRequest)
             }
             do {
-                let token = try oauth.token(
+                let issued = try oauth.token(
                     code: body.code,
                     codeVerifier: body.codeVerifier,
                     clientID: body.clientID,
                     redirectURI: body.redirectURI
                 )
                 return json(TokenResponse(
-                    accessToken: token.value,
+                    accessToken: issued.access.value,
                     tokenType: "Bearer",
-                    expiresIn: Int(token.expiresAt.timeIntervalSinceNow),
-                    scope: token.scopes.sorted().joined(separator: " ")
+                    expiresIn: Int(issued.access.expiresAt.timeIntervalSinceNow),
+                    scope: issued.access.scopes.sorted().joined(separator: " ")
                 ), status: .ok)
             } catch {
                 return json(APIError(error: "invalid_grant", errorDescription: "\(error)"),

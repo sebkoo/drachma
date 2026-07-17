@@ -26,7 +26,7 @@ final class OAuthServerTests: XCTestCase {
         return server
     }
 
-    private func fullFlow(on server: OAuthServer) throws -> AccessToken {
+    private func fullFlow(on server: OAuthServer) throws -> IssuedTokens {
         let verifier = PKCE.generateCodeVerifier()
         let challenge = PKCE.challenge(for: verifier)!
         let code = try server.authorize(
@@ -43,10 +43,11 @@ final class OAuthServerTests: XCTestCase {
     }
 
     func testHappyPathIssuesAudienceBoundToken() throws {
-        let token = try fullFlow(on: makeServer())
-        XCTAssertEqual(token.audience, audience)
-        XCTAssertEqual(token.scopes, ["rates:read"])
-        XCTAssertFalse(token.value.isEmpty)
+        let issued = try fullFlow(on: makeServer())
+        XCTAssertEqual(issued.access.audience, audience)
+        XCTAssertEqual(issued.access.scopes, ["rates:read"])
+        XCTAssertFalse(issued.access.value.isEmpty)
+        XCTAssertFalse(issued.refreshToken.isEmpty)
     }
 
     func testUnknownClientRejected() {
@@ -124,12 +125,62 @@ final class OAuthServerTests: XCTestCase {
 
     func testIntrospectionHonorsExpiry() throws {
         let server = makeServer()
-        let token = try fullFlow(on: server)
+        let token = try fullFlow(on: server).access
 
         XCTAssertEqual(server.introspect(token.value)?.value, token.value)
         XCTAssertNil(server.introspect("not-a-token"))
 
         clock.advance(4000) // past the 3600s token TTL
         XCTAssertNil(server.introspect(token.value))
+    }
+
+    // MARK: - Refresh rotation (OAuth 2.1 / RFC 9700)
+
+    func testRefreshRotatesBothTokens() throws {
+        let server = makeServer()
+        let first = try fullFlow(on: server)
+
+        let second = try server.refresh(refreshToken: first.refreshToken, clientID: "drachma-agent")
+
+        XCTAssertNotEqual(second.refreshToken, first.refreshToken)
+        XCTAssertNotEqual(second.access.value, first.access.value)
+        XCTAssertEqual(second.access.scopes, first.access.scopes, "rotation must not widen scope")
+        XCTAssertNotNil(server.introspect(second.access.value))
+    }
+
+    func testRefreshReuseRevokesTheWholeFamily() throws {
+        let server = makeServer()
+        let first = try fullFlow(on: server)
+        let second = try server.refresh(refreshToken: first.refreshToken, clientID: "drachma-agent")
+
+        // Replaying the rotated token is the theft signal: reject it AND kill
+        // the successor's live tokens, so a thief and the real client can't
+        // both keep sessions alive.
+        XCTAssertThrowsError(try server.refresh(refreshToken: first.refreshToken, clientID: "drachma-agent")) {
+            XCTAssertEqual($0 as? OAuthError, .invalidGrant)
+        }
+        XCTAssertNil(server.introspect(second.access.value), "family revocation reaches access tokens")
+        XCTAssertThrowsError(try server.refresh(refreshToken: second.refreshToken, clientID: "drachma-agent")) {
+            XCTAssertEqual($0 as? OAuthError, .invalidGrant)
+        }
+    }
+
+    func testRefreshRejectsWrongClient() throws {
+        let server = makeServer()
+        let issued = try fullFlow(on: server)
+
+        XCTAssertThrowsError(try server.refresh(refreshToken: issued.refreshToken, clientID: "ghost")) {
+            XCTAssertEqual($0 as? OAuthError, .invalidGrant)
+        }
+    }
+
+    func testExpiredRefreshTokenRejected() throws {
+        let server = makeServer()
+        let issued = try fullFlow(on: server)
+
+        clock.advance(31 * 24 * 3600) // past the 30-day refresh TTL
+        XCTAssertThrowsError(try server.refresh(refreshToken: issued.refreshToken, clientID: "drachma-agent")) {
+            XCTAssertEqual($0 as? OAuthError, .invalidGrant)
+        }
     }
 }
