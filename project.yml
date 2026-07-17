@@ -29,6 +29,9 @@ targets:
         MARKETING_VERSION: 0.1.0
         SWIFT_VERSION: "6.0"
         TARGETED_DEVICE_FAMILY: "1"
+        # The Connect screen talks to your own drachma-server on the LAN;
+        # iOS gates local-network sockets behind this usage string.
+        INFOPLIST_KEY_NSLocalNetworkUsageDescription: Drachma connects to your own drachma-server on your local network for the OAuth demo.
   DrachmaWidgets:
     type: app-extension
     platform: iOS

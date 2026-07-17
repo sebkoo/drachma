@@ -33,13 +33,13 @@ let package = Package(
         ),
         .target(
             name: "DrachmaApp",
-            dependencies: ["DrachmaCore"],
+            dependencies: ["DrachmaCore", "DrachmaAuth", "DrachmaAuthClient"],
             path: "ios/Drachma",
             exclude: ["README.md"]
         ),
         .testTarget(
             name: "DrachmaAppTests",
-            dependencies: ["DrachmaApp", "DrachmaCore"],
+            dependencies: ["DrachmaApp", "DrachmaCore", "DrachmaAuthClient"],
             path: "ios/DrachmaTests"
         ),
         .executableTarget(

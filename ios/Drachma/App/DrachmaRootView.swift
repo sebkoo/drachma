@@ -21,6 +21,15 @@ public struct DrachmaRootView: View {
                 coordinator.push(.history(base: converter.fromCurrency, quote: converter.toCurrency))
             }
             .navigationTitle("Drachma")
+            .toolbar {
+                ToolbarItem {
+                    Button {
+                        coordinator.push(.connect)
+                    } label: {
+                        Label("Connect", systemImage: "person.badge.key")
+                    }
+                }
+            }
             .navigationDestination(for: Route.self) { route in
                 switch route {
                 case .history(let base, let quote):
@@ -29,6 +38,10 @@ public struct DrachmaRootView: View {
                         base: base,
                         quote: quote
                     ))
+                case .connect:
+                    // State lives in the Keychain, not the view model — a
+                    // fresh model per visit restores from storage.
+                    ConnectView(model: ConnectViewModel())
                 }
             }
             .task {
@@ -37,6 +50,9 @@ public struct DrachmaRootView: View {
                 let arguments = ProcessInfo.processInfo.arguments
                 if arguments.contains("--open-history") {
                     coordinator.push(.history(base: converter.fromCurrency, quote: converter.toCurrency))
+                }
+                if arguments.contains("--open-connect") {
+                    coordinator.push(.connect)
                 }
                 if arguments.contains("--demo-vnd-check") {
                     converter.toCurrency = "VND"
