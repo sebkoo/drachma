@@ -163,8 +163,10 @@ and the rates data behind HTTP:
 |---|---|---|
 | `GET /health` | public | liveness |
 | `GET /.well-known/oauth-protected-resource` | public | RFC 9728 discovery |
-| `POST /oauth/authorize` | public | PKCE authorization-code issuance |
-| `POST /oauth/token` | public | code → access token |
+| `GET /oauth/authorize` | public | hosted consent page (browser front channel) |
+| `POST /oauth/approve` | public | consent decision → 302 with code + state |
+| `POST /oauth/authorize` | public | PKCE authorization-code issuance (JSON, agent path) |
+| `POST /oauth/token` | public | code → tokens, and `refresh_token` rotation |
 | `GET /v1/rates?base=USD&quote=EUR` | **Bearer `rates:read`** | live reference rate as JSON |
 
 ```sh
@@ -176,6 +178,17 @@ swift run drachma-server            # listens on :8080
 It's containerized (`Dockerfile`, non-root) and the image is built and pushed
 to GHCR by the deploy workflow. `DrachmaServerTests` drives the whole
 authorize → token → protected-resource flow over HTTP.
+
+### The app is an OAuth client of its own server
+
+The iOS app's **Connect** screen closes the loop: `ASWebAuthenticationSession`
+opens the hosted consent page, the 302 carries a one-time code back on the
+`drachma://` scheme, `DrachmaAuthClient` checks `state`, exchanges code +
+PKCE verifier for tokens, stores them in the **Keychain**, and refreshes with
+**single-use rotating refresh tokens** (reuse revokes the whole token family
+— RFC 9700). Client and server share one `PKCE` implementation, and
+`ClientServerLoopTests` drives the real client types against the real router
+in-process, so contract drift fails in CI, not in a demo.
 
 ## The name
 
