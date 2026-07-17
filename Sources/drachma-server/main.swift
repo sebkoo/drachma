@@ -19,6 +19,13 @@ oauth.register(OAuthClient(
     redirectURIs: ["http://127.0.0.1/callback"],
     allowedScopes: ["rates:read"]
 ))
+// The iOS app's Connect screen — also public + PKCE. The redirect is the
+// app's custom scheme; ASWebAuthenticationSession catches it on device.
+oauth.register(OAuthClient(
+    id: "drachma-ios",
+    redirectURIs: ["drachma://oauth/callback"],
+    allowedScopes: ["rates:read"]
+))
 
 let router = DrachmaRouter.build(
     resourceIdentifier: resourceIdentifier,

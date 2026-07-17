@@ -88,6 +88,7 @@ let package = Package(
             dependencies: [
                 "DrachmaServer",
                 "DrachmaAuth",
+                "DrachmaAuthClient",
                 "DrachmaCore",
                 .product(name: "Hummingbird", package: "hummingbird"),
                 .product(name: "HummingbirdTesting", package: "hummingbird"),
